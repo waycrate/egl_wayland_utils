@@ -1025,7 +1025,7 @@ mod egl1_0 {
 						configs.set_len(count as usize);
 						Ok(())
 					} else {
-						Err(self.get_error().unwrap())
+						Err(self.get_error().unwrap_or(Error::Unknown))
 					}
 				}
 			}
@@ -1236,7 +1236,7 @@ mod egl1_0 {
 				if self.api.eglSwapBuffers(display.as_ptr(), surface.as_ptr()) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error().unwrap_or(Error::Unknown))
 				}
 			}
 		}

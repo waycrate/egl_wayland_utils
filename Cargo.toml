@@ -7,11 +7,11 @@ gl = "^0.14"
 wayland-client = "^0.31"
 wayland-protocols = "^0.32"
 wayland-egl = "^0.32"
-r-egl = { path = "./r-egl", version = "0.2.1" }
+r-egl = { path = "./r-egl", version = "0.2.2" }
 wayland-backend = "^0.3"
 
 [workspace.package]
-version = "0.2.1"
+version = "0.2.2"
 authors = [
 	"Timothée Haudebourg <author@haudebourg.net>",
 	"Sean Kerr <sean@metatomic.io>",
