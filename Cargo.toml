@@ -15,7 +15,7 @@ build = "build.rs"
 edition = "2024"
 
 [features]
-default = ["1_5"]
+default = ["1_5", "dynamic"]
 static = ["pkg-config"]
 no-pkg-config = []
 dynamic = ["libloading"]

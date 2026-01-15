@@ -20,14 +20,16 @@
 //! Here is a simple example showing how to use this library to create an EGL context when static linking is enabled.
 //!
 //! ```rust
-//! extern crate khronos_egl as egl;
+//! use khronos_egl as egl;
+//! use wayland_client::Connection;
 //!
 //! fn main() -> Result<(), egl::Error> {
 //!   // Create an EGL API instance.
 //!   // The `egl::Static` API implementation is only available when the `static` feature is enabled.
 //!   let egl = egl::Instance::new(egl::Static);
+//!   let connection = Connection::connect_to_env().expect("unable to connect to the wayland server");
+//!   let wayland_display = connection.display();
 //!
-//!   let wayland_display = wayland_client::Display::connect_to_env().expect("unable to connect to the wayland server");
 //!   let display = unsafe { egl.get_display(wayland_display.get_display_ptr() as *mut std::ffi::c_void) }.unwrap();
 //!   egl.initialize(display)?;
 //!
@@ -1954,7 +1956,7 @@ macro_rules! api {
 			};
 
 			$(
-				extern "system" {
+				unsafe extern "system" {
 					$(
 						#[cfg(feature=$version)]
 						pub fn $name ($($arg : $atype ),* ) -> $rtype ;
@@ -2320,7 +2322,7 @@ macro_rules! api {
 			$(
 				#[inline(always)]
 				unsafe fn $name(&self, $($arg : $atype),*) -> $rtype {
-					ffi::$name($($arg),*)
+					unsafe { ffi::$name($($arg),*) }
 				}
 			)*
 		}
