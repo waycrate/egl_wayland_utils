@@ -327,11 +327,11 @@ mod egl1_0 {
 
 	#[repr(C)]
 	#[cfg(target_os = "android")]
-	struct android_native_window_t;
+	pub struct android_native_window_t;
 
 	#[repr(C)]
 	#[cfg(target_os = "android")]
-	struct egl_native_pixmap_t;
+	pub struct egl_native_pixmap_t;
 
 	#[cfg(target_os = "android")]
 	pub type NativePixmapType = *mut egl_native_pixmap_t;
@@ -2396,9 +2396,11 @@ macro_rules! api {
 		unsafe impl<L: std::borrow::Borrow<libloading::Library>> api::$id for Dynamic<L, $id> {
 			$(
 				#[inline(always)]
-				unsafe fn $name(&self, $($arg : $atype),*) -> $rtype { unsafe {
-					(self.raw.$name.assume_init())($($arg),*)
-				}}
+				unsafe fn $name(&self, $($arg : $atype),*) -> $rtype {
+					unsafe {
+						(self.raw.$name.assume_init())($($arg),*)
+					}
+				}
 			)*
 		}
 
