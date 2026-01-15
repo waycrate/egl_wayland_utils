@@ -1,4 +1,4 @@
-extern crate khronos_egl as egl;
+use r_egl as egl;
 
 use egl::API as egl;
 use gl::types::{GLboolean, GLchar, GLenum, GLint, GLuint, GLvoid};

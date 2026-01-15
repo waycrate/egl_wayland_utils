@@ -1,5 +1,5 @@
 [package]
-name = "khronos-egl"
+name = "r-egl"
 version = "6.0.0"
 authors = [
 	"Timothée Haudebourg <author@haudebourg.net>",

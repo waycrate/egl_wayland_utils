@@ -20,7 +20,7 @@
 //! Here is a simple example showing how to use this library to create an EGL context when static linking is enabled.
 //!
 //! ```rust, ignore
-//! use khronos_egl as egl;
+//! use r_egl as egl;
 //! use wayland_client::Connection;
 //! use wayland_client::Proxy;
 //!
@@ -72,7 +72,7 @@
 //! can provide a static `Instance`, called `API` that can then be accessed everywhere.
 //!
 //! ```
-//! # extern crate khronos_egl as egl;
+//! # use r_egl as egl;
 //! #[cfg(feature="static")]
 //! use egl::API as egl;
 //! ```
@@ -90,7 +90,7 @@
 //! You can then load the EGL API into a `Instance<Dynamic<libloading::Library>>` as follows:
 //!
 //! ``` ignore
-//! # use khronos_egl as egl;
+//! # use r_egl as egl;
 //! let lib = unsafe { libloading::Library::new("libEGL.so.1") }.expect("unable to find libEGL.so.1");
 //! let egl = unsafe { egl::DynamicInstance::<egl::EGL1_4>::load_required_from(lib) }.expect("unable to load libEGL.so.1");
 //! ```
@@ -99,7 +99,7 @@
 //! This will return a `DynamicInstance<egl::EGL1_4>`, however in that case where `libEGL.so.1` provides a more recent version of EGL,
 //! you can still upcast this instance to provide version specific features:
 //! ``` ignore
-//! # use khronos_egl as egl;
+//! # use r_egl as egl;
 //! # let lib = unsafe { libloading::Library::new("libEGL.so.1") }.expect("unable to find libEGL.so.1");
 //! # let egl = unsafe { egl::DynamicInstance::<egl::EGL1_4>::load_required_from(lib) }.expect("unable to load libEGL.so.1");
 //! match egl.upcast::<egl::EGL1_5>() {
@@ -618,7 +618,7 @@ mod egl1_0 {
 		/// ## Example
 		///
 		/// ```ignore
-		/// # use khronos_egl as egl;
+		/// # use r_egl as egl;
 		/// # use wayland_client;
 		/// # use wayland_client::Proxy;
 		/// # fn main() -> Result<(), egl::Error> {
@@ -682,7 +682,7 @@ mod egl1_0 {
 		/// This is an helper function that will call `choose_config` with a buffer of
 		/// size 1, which is equivalent to:
 		/// ```ignore
-		/// /// # use khronos_egl as egl;
+		/// # use r_egl as egl;
 		/// # use wayland_client::{Connection, Proxy};
 		/// # fn main() -> Result<(), egl::Error> {
 		/// # let egl = egl::Instance::new(egl::Static);
@@ -920,7 +920,7 @@ mod egl1_0 {
 		///
 		/// ## Example
 		/// ```ignore
-		/// # use khronos_egl as egl;
+		/// # use r_egl as egl;
 		/// # use wayland_client::{Connection, Proxy};
 		/// # fn main() -> Result<(), egl::Error> {
 		/// # let egl = egl::Instance::new(egl::Static);
@@ -958,7 +958,7 @@ mod egl1_0 {
 		///
 		/// ## Example
 		/// ``` ignore
-		/// # use khronos_egl as egl;
+		/// # use r_egl as egl;
 		/// # use wayland_client::{Connection, Proxy};
 		/// # fn main() -> Result<(), egl::Error> {
 		/// # let egl = egl::Instance::new(egl::Static);

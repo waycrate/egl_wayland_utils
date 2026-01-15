@@ -1,5 +1,5 @@
-extern crate khronos_egl as egl;
 use gl::types::{GLboolean, GLchar, GLenum, GLint, GLuint, GLvoid};
+use r_egl as egl;
 use std::ffi::CStr;
 use std::ptr;
 use std::sync::Arc;

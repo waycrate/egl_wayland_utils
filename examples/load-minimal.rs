@@ -1,5 +1,5 @@
-extern crate khronos_egl as egl;
 use egl::{EGL1_2, EGL1_4};
+use r_egl as egl;
 use std::sync::Arc;
 
 fn main() {
