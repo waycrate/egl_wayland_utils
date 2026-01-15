@@ -472,6 +472,9 @@ mod egl1_0 {
 		/// contexts and reinitialise OpenGL ES state and objects to continue
 		/// rendering.
 		ContextLost,
+
+		/// HACK: if this error happened, you should report to us
+		Unknown,
 	}
 
 	impl std::error::Error for Error {
@@ -498,6 +501,7 @@ mod egl1_0 {
 				BadNativePixmap => BAD_NATIVE_PIXMAP,
 				BadNativeWindow => BAD_NATIVE_WINDOW,
 				ContextLost => CONTEXT_LOST,
+				Unknown => UNKNOWN_ERROR,
 			}
 		}
 
@@ -538,6 +542,7 @@ mod egl1_0 {
 				ContextLost => {
 					"A power management event has occurred. The application must destroy all contexts and reinitialise OpenGL ES state and objects to continue rendering."
 				}
+				Unknown => "This error is unhandled, it is a bug",
 			}
 		}
 	}
@@ -623,7 +628,8 @@ mod egl1_0 {
 				{
 					Ok(count as usize)
 				} else {
-					Err(self.get_error().unwrap())
+					// NOTE: this place it should never panic
+					Err(self.get_error().unwrap_or(Error::Unknown))
 				}
 			}
 		}
@@ -1090,7 +1096,7 @@ mod egl1_0 {
 				if e == SUCCESS {
 					None
 				} else {
-					Some(e.try_into().unwrap())
+					Some(e.try_into().expect("should receive an error"))
 				}
 			}
 		}
@@ -1295,6 +1301,8 @@ mod egl1_1 {
 	pub const TEXTURE_RGB: Int = 0x305D;
 	pub const TEXTURE_RGBA: Int = 0x305E;
 	pub const TEXTURE_TARGET: Int = 0x3081;
+	// HACK: need to findout what fuck this error is
+	pub const UNKNOWN_ERROR: Int = 0x9999;
 
 	impl<T: api::EGL1_1> Instance<T> {
 		/// Defines a two-dimensional texture image.
