@@ -1853,6 +1853,8 @@ mod egl1_5 {
 			attrib_list: &[Attrib],
 		) -> Result<Surface, Error> {
 			unsafe {
+				#[cfg(target_os = "android")]
+				let native_window = native_window as *mut c_void;
 				check_attrib_list(attrib_list)?;
 
 				let surface = self.api.eglCreatePlatformWindowSurface(
@@ -1894,6 +1896,8 @@ mod egl1_5 {
 			unsafe {
 				check_attrib_list(attrib_list)?;
 
+				#[cfg(target_os = "android")]
+				let native_pixmap = native_pixmap as *mut c_void;
 				let surface = self.api.eglCreatePlatformPixmapSurface(
 					display.as_ptr(),
 					config.as_ptr(),
