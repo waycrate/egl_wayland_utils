@@ -473,8 +473,8 @@ mod egl1_0 {
 		/// rendering.
 		ContextLost,
 
-		/// HACK: if this error happened, you should report to us
-		Unknown,
+		//// 0x300F - 0x301F reserved for additional errors.
+		Reserved(Int),
 	}
 
 	impl std::error::Error for Error {
@@ -501,7 +501,7 @@ mod egl1_0 {
 				BadNativePixmap => BAD_NATIVE_PIXMAP,
 				BadNativeWindow => BAD_NATIVE_WINDOW,
 				ContextLost => CONTEXT_LOST,
-				Unknown => UNKNOWN_ERROR,
+				Reserved(value) => *value,
 			}
 		}
 
@@ -542,7 +542,7 @@ mod egl1_0 {
 				ContextLost => {
 					"A power management event has occurred. The application must destroy all contexts and reinitialise OpenGL ES state and objects to continue rendering."
 				}
-				Unknown => "This error is unhandled, it is a bug",
+				Reserved(_) => "Reserved Errors",
 			}
 		}
 	}
@@ -559,6 +559,7 @@ mod egl1_0 {
 		fn try_from(e: Int) -> Result<Error, Int> {
 			use Error::*;
 			match e {
+				SUCCESS => Err(e),
 				NOT_INITIALIZED => Ok(NotInitialized),
 				BAD_ACCESS => Ok(BadAccess),
 				BAD_ALLOC => Ok(BadAlloc),
@@ -573,7 +574,9 @@ mod egl1_0 {
 				BAD_NATIVE_PIXMAP => Ok(BadNativePixmap),
 				BAD_NATIVE_WINDOW => Ok(BadNativeWindow),
 				CONTEXT_LOST => Ok(ContextLost),
-				_ => Err(e),
+				// NOTE: RESERVED
+				0x300F..=0x301f => Ok(Error::Reserved(e)),
+				value => Err(value),
 			}
 		}
 	}
@@ -628,8 +631,7 @@ mod egl1_0 {
 				{
 					Ok(count as usize)
 				} else {
-					// NOTE: this place it should never panic
-					Err(self.get_error().unwrap_or(Error::Unknown))
+					Err(self.get_error().unwrap())
 				}
 			}
 		}
@@ -1025,7 +1027,7 @@ mod egl1_0 {
 						configs.set_len(count as usize);
 						Ok(())
 					} else {
-						Err(self.get_error().unwrap_or(Error::Unknown))
+						Err(self.get_error().unwrap())
 					}
 				}
 			}
@@ -1236,7 +1238,7 @@ mod egl1_0 {
 				if self.api.eglSwapBuffers(display.as_ptr(), surface.as_ptr()) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap_or(Error::Unknown))
+					Err(self.get_error().unwrap())
 				}
 			}
 		}
