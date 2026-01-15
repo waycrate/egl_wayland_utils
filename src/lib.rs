@@ -132,7 +132,6 @@ use std::ffi::CStr;
 use std::ffi::CString;
 use std::fmt;
 use std::ptr;
-use std::sync::LazyLock;
 
 use libc::{c_char, c_uint, c_void};
 
@@ -316,24 +315,24 @@ mod egl1_0 {
 		}
 	}
 
-	#[cfg(not(android))]
+	#[cfg(not(target_os = "android"))]
 	pub type NativePixmapType = *mut c_void;
 
-	#[cfg(not(android))]
+	#[cfg(not(target_os = "android"))]
 	pub type NativeWindowType = *mut c_void;
 
 	#[repr(C)]
-	#[cfg(android)]
+	#[cfg(target_os = "android")]
 	struct android_native_window_t;
 
 	#[repr(C)]
-	#[cfg(android)]
+	#[cfg(target_os = "android")]
 	struct egl_native_pixmap_t;
 
-	#[cfg(android)]
+	#[cfg(target_os = "android")]
 	pub type NativePixmapType = *mut egl_native_pixmap_t;
 
-	#[cfg(android)]
+	#[cfg(target_os = "android")]
 	pub type NativeWindowType = *mut android_native_window_t;
 
 	pub const ALPHA_SIZE: Int = 0x3021;
@@ -1042,8 +1041,8 @@ mod egl1_0 {
 				let string = CString::new(procname).unwrap();
 
 				let addr = self.api.eglGetProcAddress(string.as_ptr());
-				if !(addr as *const ()).is_null() {
-					Some(addr)
+				if !addr.is_null() {
+					Some(std::mem::transmute(addr))
 				} else {
 					None
 				}
@@ -1953,7 +1952,7 @@ macro_rules! api {
 		#[cfg(feature="dynamic")]
 		#[derive(Debug)]
 		pub enum LoadError<L> {
-			/// Something wrong happend while loading the library.
+			/// Something wrong happened while loading the library.
 			Library(L),
 
 			/// The provided version does not meet the requirements.
@@ -2172,7 +2171,9 @@ macro_rules! api {
 		// nothing
 	};
 	(@api_trait ( $($pred:ident : $p_version:literal)* ) ( $($deps:tt)* ) $id:ident : $version:literal { $(fn $name:ident ($($arg:ident : $atype:ty ),* ) -> $rtype:ty ;)* }) => {
-		/// EGL API interface.
+		/// # Safety
+        ///
+        /// EGL API interface.
 		///
 		/// An implementation of this trait can be used to create an [`Instance`].
 		///
@@ -2185,6 +2186,7 @@ macro_rules! api {
 		#[cfg(feature=$version)]
 		pub unsafe trait $id $($deps)* {
 			$(
+                /// # Safety
 				unsafe fn $name (&self, $($arg : $atype ),* ) -> $rtype ;
 			)*
 		}
@@ -2552,7 +2554,7 @@ api! {
 		fn eglGetCurrentSurface(readdraw: Int) -> EGLSurface;
 		fn eglGetDisplay(display_id: NativeDisplayType) -> EGLDisplay;
 		fn eglGetError() -> Int;
-		fn eglGetProcAddress(procname: *const c_char) -> extern "system" fn();
+		fn eglGetProcAddress(procname: *const c_char) -> *const ();
 		fn eglInitialize(display: EGLDisplay, major: *mut Int, minor: *mut Int) -> Boolean;
 		fn eglMakeCurrent(
 			display: EGLDisplay,
