@@ -182,6 +182,9 @@ impl<T: Clone> Clone for Instance<T> {
 	}
 }
 
+/// Add copy for Instance
+impl<T: Copy> Copy for Instance<T> {}
+
 impl<T> Instance<T> {
 	/// Cast the API.
 	#[inline(always)]
