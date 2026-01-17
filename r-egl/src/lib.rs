@@ -420,6 +420,23 @@ mod egl1_0 {
 	pub const WIDTH: Int = 0x3057;
 	pub const WINDOW_BIT: Int = 0x0004;
 
+	/// LINUX part
+	/// https://registry.khronos.org/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import.txt
+	pub const LINUX_DRAM_FOURCC_EXT: Int = 0x3271;
+	pub const EGL_DMA_BUF_PLANE0_FD_EXT: Int = 0x3272;
+	pub const DMA_BUF_PLANE0_OFFSET_EXT: Int = 0x3273;
+	pub const DMA_BUF_PLANE0_PITCH_EXT: Int = 0x3274;
+	pub const DMA_BUF_PLANE1_FD_EXT: Int = 0x3275;
+	pub const DMA_BUF_PLANE1_OFFSET_EXT: Int = 0x3276;
+	pub const DMA_BUF_PLANE1_PITCH_EXT: Int = 0x3277;
+	pub const DMA_BUF_PLANE2_FD_EXT: Int = 0x3278;
+	pub const DMA_BUF_PLANE2_OFFSET_EXT: Int = 0x3279;
+	pub const DMA_BUF_PLANE2_PITCH_EXT: Int = 0x327A;
+	pub const YUV_COLOR_SPACE_HINT_EXT: Int = 0x327B;
+	pub const SAMPLE_RANGE_HINT_EXT: Int = 0x327C;
+	pub const YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT: Int = 0x327D;
+	pub const YUV_CHROMA_VERTICAL_SITING_HINT_EXT: Int = 0x327E;
+
 	/// EGL errors.
 	/// https://registry.khronos.org/EGL/api/1.1/EGL/egl.h
 	#[derive(Clone, Copy, PartialEq, Eq, Debug)]
