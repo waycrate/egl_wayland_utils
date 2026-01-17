@@ -421,8 +421,12 @@ mod egl1_0 {
 	pub const WINDOW_BIT: Int = 0x0004;
 
 	/// EGL errors.
+	/// https://registry.khronos.org/EGL/api/1.1/EGL/egl.h
 	#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 	pub enum Error {
+		/// In the egl.h, the success is also in the error field. And yes, even successed, the
+		/// function also may be failed, I do not know why, so I add this part
+		SuccessButError,
 		/// EGL is not initialized, or could not be initialized, for the specified
 		/// EGL display connection.
 		NotInitialized,
@@ -487,6 +491,7 @@ mod egl1_0 {
 		pub fn native(&self) -> Int {
 			use Error::*;
 			match self {
+				SuccessButError => SUCCESS,
 				NotInitialized => NOT_INITIALIZED,
 				BadAccess => BAD_ACCESS,
 				BadAlloc => BAD_ALLOC,
@@ -508,6 +513,7 @@ mod egl1_0 {
 		fn message(&self) -> &'static str {
 			use Error::*;
 			match self {
+				SuccessButError => "Although the return is success, but it still failed",
 				NotInitialized => {
 					"EGL is not initialized, or could not be initialized, for the specified EGL display connection."
 				}
@@ -559,7 +565,7 @@ mod egl1_0 {
 		fn try_from(e: Int) -> Result<Error, Int> {
 			use Error::*;
 			match e {
-				SUCCESS => Err(e),
+				SUCCESS => Ok(SuccessButError),
 				NOT_INITIALIZED => Ok(NotInitialized),
 				BAD_ACCESS => Ok(BadAccess),
 				BAD_ALLOC => Ok(BadAlloc),
@@ -631,7 +637,7 @@ mod egl1_0 {
 				{
 					Ok(count as usize)
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -698,7 +704,7 @@ mod egl1_0 {
 						configs.set_len(count as usize);
 						Ok(())
 					} else {
-						Err(self.get_error().unwrap())
+						Err(self.get_error())
 					}
 				}
 			}
@@ -756,7 +762,7 @@ mod egl1_0 {
 				{
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -789,7 +795,7 @@ mod egl1_0 {
 				if context != NO_CONTEXT {
 					Ok(Context(context))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -815,7 +821,7 @@ mod egl1_0 {
 				if surface != NO_SURFACE {
 					Ok(Surface(surface))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -848,7 +854,7 @@ mod egl1_0 {
 				if surface != NO_SURFACE {
 					Ok(Surface(surface))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -888,7 +894,7 @@ mod egl1_0 {
 				if surface != NO_SURFACE {
 					Ok(Surface(surface))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -899,7 +905,7 @@ mod egl1_0 {
 				if self.api.eglDestroyContext(display.as_ptr(), ctx.as_ptr()) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -914,7 +920,7 @@ mod egl1_0 {
 				{
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -937,7 +943,7 @@ mod egl1_0 {
 				{
 					Ok(value)
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -973,7 +979,7 @@ mod egl1_0 {
 				{
 					Ok(count as usize)
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1027,7 +1033,7 @@ mod egl1_0 {
 						configs.set_len(count as usize);
 						Ok(())
 					} else {
-						Err(self.get_error().unwrap())
+						Err(self.get_error())
 					}
 				}
 			}
@@ -1092,14 +1098,12 @@ mod egl1_0 {
 		/// since this function is automatically called by any wrapper function
 		/// returning a `Result` when necessary, this function may only return `None`
 		/// from the point of view of a user.
-		pub fn get_error(&self) -> Option<Error> {
+		pub fn get_error(&self) -> Error {
 			unsafe {
-				let e = self.api.eglGetError();
-				if e == SUCCESS {
-					None
-				} else {
-					Some(e.try_into().expect("should receive an error"))
-				}
+				self.api
+					.eglGetError()
+					.try_into()
+					.expect("should receive an error")
 			}
 		}
 
@@ -1130,7 +1134,7 @@ mod egl1_0 {
 				{
 					Ok((major, minor))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1160,7 +1164,7 @@ mod egl1_0 {
 				if self.api.eglMakeCurrent(display.as_ptr(), draw, read, ctx) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1181,7 +1185,7 @@ mod egl1_0 {
 				{
 					Ok(value)
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1204,7 +1208,7 @@ mod egl1_0 {
 				if !c_str.is_null() {
 					Ok(CStr::from_ptr(c_str))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1227,7 +1231,7 @@ mod egl1_0 {
 				{
 					Ok(value)
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1238,7 +1242,7 @@ mod egl1_0 {
 				if self.api.eglSwapBuffers(display.as_ptr(), surface.as_ptr()) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1249,7 +1253,7 @@ mod egl1_0 {
 				if self.api.eglTerminate(display.as_ptr()) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1260,7 +1264,7 @@ mod egl1_0 {
 				if self.api.eglWaitGL() == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1271,7 +1275,7 @@ mod egl1_0 {
 				if self.api.eglWaitNative(engine) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1322,7 +1326,7 @@ mod egl1_1 {
 				{
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1342,7 +1346,7 @@ mod egl1_1 {
 				{
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1363,7 +1367,7 @@ mod egl1_1 {
 				{
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1375,7 +1379,7 @@ mod egl1_1 {
 				if self.api.eglSwapInterval(display.as_ptr(), interval) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1455,7 +1459,7 @@ mod egl1_2 {
 				if self.api.eglBindAPI(api) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1490,7 +1494,7 @@ mod egl1_2 {
 				if surface != NO_SURFACE {
 					Ok(Surface::from_ptr(surface))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1501,7 +1505,7 @@ mod egl1_2 {
 				if self.api.eglReleaseThread() == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1512,7 +1516,7 @@ mod egl1_2 {
 				if self.api.eglWaitClient() == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1712,7 +1716,7 @@ mod egl1_5 {
 				if sync != NO_SYNC {
 					Ok(Sync(sync))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1728,7 +1732,7 @@ mod egl1_5 {
 				if self.api.eglDestroySync(display.as_ptr(), sync.as_ptr()) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1753,7 +1757,7 @@ mod egl1_5 {
 				if status != FALSE as Int {
 					Ok(status)
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1781,7 +1785,7 @@ mod egl1_5 {
 				{
 					Ok(value)
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1813,7 +1817,7 @@ mod egl1_5 {
 				if image != NO_IMAGE {
 					Ok(Image(image))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1824,7 +1828,7 @@ mod egl1_5 {
 				if self.api.eglDestroyImage(display.as_ptr(), image.as_ptr()) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1862,7 +1866,7 @@ mod egl1_5 {
 				if display != NO_DISPLAY {
 					Ok(Display::from_ptr(display))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1903,7 +1907,7 @@ mod egl1_5 {
 				if surface != NO_SURFACE {
 					Ok(Surface::from_ptr(surface))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1944,7 +1948,7 @@ mod egl1_5 {
 				if surface != NO_SURFACE {
 					Ok(Surface::from_ptr(surface))
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
@@ -1958,7 +1962,7 @@ mod egl1_5 {
 				if self.api.eglWaitSync(display.as_ptr(), sync.as_ptr(), flags) == TRUE {
 					Ok(())
 				} else {
-					Err(self.get_error().unwrap())
+					Err(self.get_error())
 				}
 			}
 		}
