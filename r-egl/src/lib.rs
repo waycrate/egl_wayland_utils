@@ -423,38 +423,6 @@ mod egl1_0 {
 	pub const WIDTH: Int = 0x3057;
 	pub const WINDOW_BIT: Int = 0x0004;
 
-	/// Linux dma_buf buf
-	/// https://registry.khronos.org/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import.txt
-	pub const LINUX_DMA_BUF_EXT: Int = 0x3270;
-	pub const LINUX_DRM_FOURCC_EXT: Int = 0x3271;
-	pub const DMA_BUF_PLANE0_FD_EXT: Int = 0x3272;
-	pub const DMA_BUF_PLANE0_OFFSET_EXT: Int = 0x3273;
-	pub const DMA_BUF_PLANE0_PITCH_EXT: Int = 0x3274;
-	pub const DMA_BUF_PLANE1_FD_EXT: Int = 0x3275;
-	pub const DMA_BUF_PLANE1_OFFSET_EXT: Int = 0x3276;
-	pub const DMA_BUF_PLANE1_PITCH_EXT: Int = 0x3277;
-	pub const DMA_BUF_PLANE2_FD_EXT: Int = 0x3278;
-	pub const DMA_BUF_PLANE2_OFFSET_EXT: Int = 0x3279;
-	pub const DMA_BUF_PLANE2_PITCH_EXT: Int = 0x327A;
-	pub const YUV_COLOR_SPACE_HINT_EXT: Int = 0x327B;
-	pub const SAMPLE_RANGE_HINT_EXT: Int = 0x327C;
-	pub const YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT: Int = 0x327D;
-	pub const YUV_CHROMA_VERTICAL_SITING_HINT_EXT: Int = 0x327E;
-
-	/// Linux dma_buf modifiers
-	/// https://registry.khronos.org/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import_modifiers.txt
-	pub const DMA_BUF_PLANE0_MODIFIER_LO_EXT: Int = 0x3443;
-	pub const DMA_BUF_PLANE0_MODIFIER_HI_EXT: Int = 0x3444;
-	pub const DMA_BUF_PLANE1_MODIFIER_LO_EXT: Int = 0x3445;
-	pub const DMA_BUF_PLANE1_MODIFIER_HI_EXT: Int = 0x3446;
-	pub const DMA_BUF_PLANE2_MODIFIER_LO_EXT: Int = 0x3447;
-	pub const DMA_BUF_PLANE2_MODIFIER_HI_EXT: Int = 0x3448;
-	pub const DMA_BUF_PLANE3_FD_EXT: Int = 0x3440;
-	pub const DMA_BUF_PLANE3_OFFSET_EXT: Int = 0x3441;
-	pub const DMA_BUF_PLANE3_PITCH_EXT: Int = 0x3442;
-	pub const DMA_BUF_PLANE3_MODIFIER_LO_EXT: Int = 0x3449;
-	pub const DMA_BUF_PLANE3_MODIFIER_HI_EXT: Int = 0x344A;
-
 	/// EGL errors.
 	/// https://registry.khronos.org/EGL/api/1.1/EGL/egl.h
 	#[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -1342,8 +1310,6 @@ mod egl1_1 {
 	pub const TEXTURE_RGB: Int = 0x305D;
 	pub const TEXTURE_RGBA: Int = 0x305E;
 	pub const TEXTURE_TARGET: Int = 0x3081;
-	// HACK: need to findout what fuck this error is
-	pub const UNKNOWN_ERROR: Int = 0x9999;
 
 	impl<T: api::EGL1_1> Instance<T> {
 		/// Defines a two-dimensional texture image.
@@ -1486,6 +1452,38 @@ mod egl1_2 {
 	pub const SWAP_BEHAVIOR: Int = 0x3093;
 	pub const UNKNOWN: Int = -1;
 	pub const VERTICAL_RESOLUTION: Int = 0x3091;
+
+	/// Linux dma_buf buf
+	/// https://registry.khronos.org/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import.txt
+	pub const LINUX_DMA_BUF_EXT: Int = 0x3270;
+	pub const LINUX_DRM_FOURCC_EXT: Int = 0x3271;
+	pub const DMA_BUF_PLANE0_FD_EXT: Int = 0x3272;
+	pub const DMA_BUF_PLANE0_OFFSET_EXT: Int = 0x3273;
+	pub const DMA_BUF_PLANE0_PITCH_EXT: Int = 0x3274;
+	pub const DMA_BUF_PLANE1_FD_EXT: Int = 0x3275;
+	pub const DMA_BUF_PLANE1_OFFSET_EXT: Int = 0x3276;
+	pub const DMA_BUF_PLANE1_PITCH_EXT: Int = 0x3277;
+	pub const DMA_BUF_PLANE2_FD_EXT: Int = 0x3278;
+	pub const DMA_BUF_PLANE2_OFFSET_EXT: Int = 0x3279;
+	pub const DMA_BUF_PLANE2_PITCH_EXT: Int = 0x327A;
+	pub const YUV_COLOR_SPACE_HINT_EXT: Int = 0x327B;
+	pub const SAMPLE_RANGE_HINT_EXT: Int = 0x327C;
+	pub const YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT: Int = 0x327D;
+	pub const YUV_CHROMA_VERTICAL_SITING_HINT_EXT: Int = 0x327E;
+
+	/// Linux dma_buf modifiers
+	/// https://registry.khronos.org/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import_modifiers.txt
+	pub const DMA_BUF_PLANE0_MODIFIER_LO_EXT: Int = 0x3443;
+	pub const DMA_BUF_PLANE0_MODIFIER_HI_EXT: Int = 0x3444;
+	pub const DMA_BUF_PLANE1_MODIFIER_LO_EXT: Int = 0x3445;
+	pub const DMA_BUF_PLANE1_MODIFIER_HI_EXT: Int = 0x3446;
+	pub const DMA_BUF_PLANE2_MODIFIER_LO_EXT: Int = 0x3447;
+	pub const DMA_BUF_PLANE2_MODIFIER_HI_EXT: Int = 0x3448;
+	pub const DMA_BUF_PLANE3_FD_EXT: Int = 0x3440;
+	pub const DMA_BUF_PLANE3_OFFSET_EXT: Int = 0x3441;
+	pub const DMA_BUF_PLANE3_PITCH_EXT: Int = 0x3442;
+	pub const DMA_BUF_PLANE3_MODIFIER_LO_EXT: Int = 0x3449;
+	pub const DMA_BUF_PLANE3_MODIFIER_HI_EXT: Int = 0x344A;
 
 	impl<T: api::EGL1_2> Instance<T> {
 		/// Set the current rendering API.
