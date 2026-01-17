@@ -423,7 +423,7 @@ mod egl1_0 {
 	/// Linux dma_buf buf
 	/// https://registry.khronos.org/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import.txt
 	pub const LINUX_DMA_BUF_EXT: Int = 0x3270;
-	pub const LINUX_DRAM_FOURCC_EXT: Int = 0x3271;
+	pub const LINUX_DRM_FOURCC_EXT: Int = 0x3271;
 	pub const DMA_BUF_PLANE0_FD_EXT: Int = 0x3272;
 	pub const DMA_BUF_PLANE0_OFFSET_EXT: Int = 0x3273;
 	pub const DMA_BUF_PLANE0_PITCH_EXT: Int = 0x3274;
